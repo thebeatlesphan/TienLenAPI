@@ -1,19 +1,24 @@
+import random
+
 class TienLen:
+	def __init__(self):
+		self.none = None
+		
 	pass
 
 class Card:
 	values = { 
-		"Two": 2,
-		"Three": 3,
-		"Four": 4,
-		"Five": 5,
-		"Six": 6,
-		"Seven": 7,
-		"Eight": 8,
-		"Nine": 9,
-		"Ten": 10,
-		"Jack": 10,
-		"Queen": 10,
+		"Two": 12,
+		"Three": 0,
+		"Four": 1,
+		"Five": 2,
+		"Six": 3,
+		"Seven": 4,
+		"Eight": 5,
+		"Nine": 6,
+		"Ten": 7,
+		"Jack": 8,
+		"Queen": 9,
 		"King": 10,
 		"Ace": 11
 	}
@@ -38,6 +43,26 @@ class Deck:
 				self.deck.append(Card(rank, suit))
 
 	def shuffle(self):
-		
-deck = Deck()
-print(deck.deck[0])
+		temp = None
+		for x in range(len(self.deck)):
+			random_position = random.randint(0, 51)
+			temp = self.deck[random_position]
+			self.deck[random_position] = self.deck[x]
+			self.deck[x] = temp
+
+	def deal_card(self):
+		return self.deck.pop(0)
+
+class Player():
+	def __init__(self):
+		self.player1 = []
+		self.player2 = []
+		self.player3 = []
+		self.player4 = []
+
+	def deal_cards(self, new_deck):
+		for x in range(12):
+			self.player1.append(new_deck.deal_card())
+			self.player2.append(new_deck.deal_card())
+			self.player3.append(new_deck.deal_card())
+			self.player4.append(new_deck.deal_card())
