@@ -5,6 +5,7 @@ let botOne = []
 let botTwo = []
 let botThree = []
 let lastHandPlayed = []
+let intendedHandToPlay = []
 
 async function startGameBtn() {
 	let url = "http://127.0.0.1:8000/deck"
@@ -39,8 +40,6 @@ async function startGameBtn() {
 
 		const botThreeHTML = displayBots(botOne)
 		document.querySelector(".botThree").insertAdjacentHTML("afterbegin", botThreeHTML)
-
-		console.log(botOne)
 	})
 }
 
@@ -66,7 +65,6 @@ const sortSuits = (hand) => {
 	})
 }
 
-
 // render bot's hands
 const displayBots = (botHand) => {
 	const name = 'botName'
@@ -78,3 +76,41 @@ const displayBots = (botHand) => {
 	`
 }
 
+const findIndx = (rank, suit) => {
+	for (let i = 0; i < playerOne.length; i++) {
+		if (playerOne[i]['rank'] == rank && playerOne[i]['suit'] == suit) {
+			return i
+		}
+	}
+}
+
+const displayCard = (rank, suit) => {
+	return `
+	<div class="${suit == 'Diamonds' || suit == 'Hearts' ? 'card red' : 'card'}">
+	<p>${rank}</p>
+	<p>${suit}</p>
+	</div>`
+}
+
+document.querySelector(".playerOne").addEventListener("click", function(e){
+	let tempRank
+	let tempSuit 
+
+	const target = e.target
+	if (target.parentNode.classList == 'playerOne') {
+		tempRank = target.children[0].innerText
+		tempSuit = target.children[1].innerText
+
+		target.parentNode.removeChild(e.target)
+	} else if (target.parentNode.parentNode.classList == 'playerOne') {
+		tempRank = target.parentNode.children[0].innerText
+		tempSuit = target.parentNode.children[1].innerText
+
+		target.parentNode.parentNode.removeChild(e.target.parentNode)
+	}
+
+	tempIndex = findIndx(tempRank, tempSuit)
+	intendedHandToPlay.push(playerOne.splice(tempIndex, tempIndex+1))
+	cardHTML = displayCard(tempRank, tempSuit)
+	document.querySelector(".intendedHandToPlay").insertAdjacentHTML("afterbegin", cardHTML)
+})

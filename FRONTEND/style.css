@@ -44,7 +44,7 @@ body {
 
 .playerOne {
   position: absolute;
-  bottom: -1.5rem;
+  bottom: -2rem;
   display: flex;
   flex-wrap: wrap;
   margin: 0.5rem;
@@ -65,7 +65,7 @@ body {
 }
 
 .card:hover {
-  transform: translateY(-10px);
+  transform: translateY(-1px);
 }
 
 .botGroup {
@@ -87,4 +87,13 @@ body {
 .botName {
   position: absolute;
   bottom: -1.5rem;
+}
+
+.lastHandPlayed {
+
+}
+
+.intendedHandToPlay {
+  position: absolute;
+  display: flex;
 }
