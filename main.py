@@ -26,7 +26,7 @@ app.add_middleware(
 def read_root():
 	return {"hello": "world"}
 
-@app.get("/deck")
+@app.get("/deal-cards")
 def create_deck():
 	deck = TienLen.Deck()
 	deck.shuffle()

@@ -7,8 +7,29 @@ let botThree = []
 let lastHandPlayed = []
 let intendedHandToPlay = []
 
+// driver program
+async function main() {
+	try {
+		const players = await startGame()
+		console.log(players)
+	} catch (err) {
+		console.log(err)
+	}
+}
+main()
+
+async function startGame() {
+	try {
+		const url = "http://127.0.0.1:8000/deal-cards"
+		const data = await fetch(url).then(data => data.json())
+		return data
+	} catch (err) {
+		console.log(err)
+	}
+}
+
 async function startGameBtn() {
-	let url = "http://127.0.0.1:8000/deck"
+	let url = "http://127.0.0.1:8000/deal-cards"
 
 	// hide button onclick
 	const hideStartBtn = document.querySelector(".start-btn")
@@ -41,6 +62,10 @@ async function startGameBtn() {
 		const botThreeHTML = displayBots(botOne)
 		document.querySelector(".botThree").insertAdjacentHTML("afterbegin", botThreeHTML)
 	})
+}
+
+const renderBot = (botElement) => {
+
 }
 
 // sort hand tien len style 
@@ -101,16 +126,21 @@ document.querySelector(".playerOne").addEventListener("click", function(e){
 		tempRank = target.children[0].innerText
 		tempSuit = target.children[1].innerText
 
-		target.parentNode.removeChild(e.target)
+		target.style.display = "none"
+		//target.parentNode.removeChild(e.target)
 	} else if (target.parentNode.parentNode.classList == 'playerOne') {
 		tempRank = target.parentNode.children[0].innerText
 		tempSuit = target.parentNode.children[1].innerText
 
-		target.parentNode.parentNode.removeChild(e.target.parentNode)
+		target.parentNode.style.display = "none"
+		//target.parentNode.parentNode.removeChild(e.target.parentNode)
 	}
 
+	console.log(tempRank + tempSuit)
+/*
 	tempIndex = findIndx(tempRank, tempSuit)
 	intendedHandToPlay.push(playerOne.splice(tempIndex, tempIndex+1))
 	cardHTML = displayCard(tempRank, tempSuit)
 	document.querySelector(".intendedHandToPlay").insertAdjacentHTML("afterbegin", cardHTML)
+*/
 })

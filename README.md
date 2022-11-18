@@ -73,3 +73,41 @@ Examples - HTTP, UDP (User Diagram Protocol), DNS (Domain Name System), etc\
 
 The frontend will be responsible for rendering and handling the complete session state.
 
+# Software Engineering Principles
+
+1) manage using a phased life-cycle plan\
+2) perform continuous validation\
+3) maintain disciplined product control\
+4) use modern programming practices\
+5) maintain clear accountability for results\
+6) use better and fewer people\
+7) maintain a commitment to improve the process
+
+* KISS (Keep It Simple, Stupid)\
+* DRY (Don't Repeat Yourself)\
+	- Inheritance and Composition
+	both allow you to write code in one place and then reuse it at other places
+	- Database Normalization
+	is a design technique used in databases to eliminate redundance (repetition) of data
+* YAGNI (You Aren't Gonna Need It)\
+
+S - SRP (Single Responsibility Principle)
+	Every function, class, module, or service should have a single clearly defined responsibility
+O - OCP (Open Closed Principle)
+	Open for extension but closed for modification
+L - LSP (Liskov Substitution Principle)
+	Every child/derived class shoulbe be substitutable for their parent/base class without altering the correctnes of the program
+I - ISP (Interface Segregation Principle)
+	Client should never be forced to depend on methods it does not use
+D - DIP (Dependency Inversion Principle)
+	Avoid tight coupling between software modules
+
+## JavaScript File Structure Best Practices
+
+1. Comment Your Code\
+2. Use ES6 Classes\
+3. Use Promises in Your JavaScript Data Structures\
+4. Keep Things Separated\
+5. Use Constants and Enums\
+
+* async functions should implement try / catches\

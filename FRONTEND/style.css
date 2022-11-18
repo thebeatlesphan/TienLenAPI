@@ -68,6 +68,12 @@ body {
   transform: translateY(-1px);
 }
 
+.card:visited {
+  position: absolute;
+  top: 0;
+  background-color: yellow;
+}
+
 .botGroup {
   display: flex;
   justify-content: space-around;
@@ -96,4 +102,10 @@ body {
 .intendedHandToPlay {
   position: absolute;
   display: flex;
+  flex-wrap: wrap;
+}
+
+.intendedHandToPlay .card{
+  height: 60px;
+  width: 40px;
 }
