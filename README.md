@@ -7,6 +7,13 @@ This project will be a test drive with FastAPI
 pip install fastapi\
 pip install uvicorn
 
+## INSTRUCTIONS 
+
+clone repo
+cd pathToRepo
+```uvicorn main:app --reload```
+(this will host program at your localhost / 127.0.0.1)
+
 # BACKEND
 
 The backend will contain all the logic for the game.\
@@ -48,7 +55,7 @@ Userbase - These are a thing of the past, and the dynamic user base is very less
 Servers Specifications - The same server must be utilized to process every request\
 Scaling Architecture - Scaling architecture is difficult and complex\
 Programming - It is difficult to code as one of the salient features here is data storage\
-Examples - Telent, FTP (File Transfer Protocol), etc\
+Examples - Telent, FTP (File Transfer Protocol), etc
 
 #### Stateless
 
@@ -67,7 +74,7 @@ Userbase - These are the future because more and more industries are moving towa
 Servers Specifications - Different servers can be used to process different information at a time\
 Scaling Architecture - It is relatively easier to scale architecture\
 Programming - It is much easier to code\
-Examples - HTTP, UDP (User Diagram Protocol), DNS (Domain Name System), etc\
+Examples - HTTP, UDP (User Diagram Protocol), DNS (Domain Name System), etc
 
 # FRONTEND
 
@@ -75,21 +82,21 @@ The frontend will be responsible for rendering and handling the complete session
 
 # Software Engineering Principles
 
-1) manage using a phased life-cycle plan\
-2) perform continuous validation\
-3) maintain disciplined product control\
-4) use modern programming practices\
-5) maintain clear accountability for results\
-6) use better and fewer people\
+1) manage using a phased life-cycle plan
+2) perform continuous validation
+3) maintain disciplined product control
+4) use modern programming practices
+5) maintain clear accountability for results
+6) use better and fewer people
 7) maintain a commitment to improve the process
 
-* KISS (Keep It Simple, Stupid)\
-* DRY (Don't Repeat Yourself)\
+* KISS (Keep It Simple, Stupid)
+* DRY (Don't Repeat Yourself)
 	- Inheritance and Composition
 	both allow you to write code in one place and then reuse it at other places
 	- Database Normalization
 	is a design technique used in databases to eliminate redundance (repetition) of data
-* YAGNI (You Aren't Gonna Need It)\
+* YAGNI (You Aren't Gonna Need It)
 
 S - SRP (Single Responsibility Principle)
 	Every function, class, module, or service should have a single clearly defined responsibility
@@ -104,10 +111,24 @@ D - DIP (Dependency Inversion Principle)
 
 ## JavaScript File Structure Best Practices
 
-1. Comment Your Code\
-2. Use ES6 Classes\
-3. Use Promises in Your JavaScript Data Structures\
-4. Keep Things Separated\
-5. Use Constants and Enums\
+1. Comment Your Code
+2. Use ES6 Classes
+3. Use Promises in Your JavaScript Data Structures
+4. Keep Things Separated
+5. Use Constants and Enums
 
-* async functions should implement try / catches\
+* async functions should implement try / catches
+
+### Event Propagation
+
+1. Capture phase - Starting from window, document and the root element, the event dives down through ancestors of the target element
+2. Target phase - The event gets triggered on the element on which the user has clicked
+3. Bubble phase - Finally, the event bubbles up through ancestors of the target element until the root element, document, and window
+
+### Event Delegation
+
+Instead of attaching the event listeners directly to the buttons, you delete listening to the parent. When a button is clicked, the listener of the parent element catches the bubbling event.\
+
+1. Determine the parent of elements to watch for events
+2. Attach the event listener to the parent element
+3. Use event.target to select the target element

@@ -7,6 +7,7 @@ class TienLen:
 	pass
 
 class Card:
+
 	values = { 
 		"Two": 12,
 		"Three": 0,
@@ -22,6 +23,7 @@ class Card:
 		"King": 10,
 		"Ace": 11
 	}
+
 
 	def __init__(self, rank, suit):
 		self.rank = rank
