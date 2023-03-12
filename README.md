@@ -5,19 +5,36 @@ This project will be a test drive with FastAPI
 # IMPORTANT PYTHON PACKAGES
 
 pip install fastapi\
-pip install uvicorn
+pip install uvicorn\ (migrated to hypercorn for server workers)
+pip install install "hypercorn[trio]"
+
 
 ## INSTRUCTIONS 
 
-clone repo
-cd pathToRepo
-```uvicorn main:app --reload```
-(this will host program at your localhost / 127.0.0.1)
+clone repo\
+cd pathToRepo\
+```gunicorn main:app --workers 4 --worker-class```\
+(this will host program at your localhost / 127.0.0.1)\
+
+```hypercorn --worker-class trio --workers 4 --reload main:app```
 
 # BACKEND
 
-The backend will contain all the logic for the game.\
-No db will be required here
+No db will be required here\
+from pydantic import BaseModel (validation for data types)\
+
+## Deployment Concepts
+
+* Security / HTTPS
+	- TLS Termination Proxy: provides encryption for API
+		e.g Traefik, Caddy, Nginx, HAProxy, Kubernetes w Ingress Controller, cloud provider
+	- HTTPS certificates
+* Running on startup
+	- Constantly available
+* Restarts
+* Replication (the number of processes running)
+* Memory
+* Previous steps before starting
 
 ## THINGS TO CONSIDER WITH API
 
@@ -98,15 +115,15 @@ The frontend will be responsible for rendering and handling the complete session
 	is a design technique used in databases to eliminate redundance (repetition) of data
 * YAGNI (You Aren't Gonna Need It)
 
-S - SRP (Single Responsibility Principle)
-	Every function, class, module, or service should have a single clearly defined responsibility
-O - OCP (Open Closed Principle)
-	Open for extension but closed for modification
-L - LSP (Liskov Substitution Principle)
-	Every child/derived class shoulbe be substitutable for their parent/base class without altering the correctnes of the program
-I - ISP (Interface Segregation Principle)
-	Client should never be forced to depend on methods it does not use
-D - DIP (Dependency Inversion Principle)
+S - SRP (Single Responsibility Principle)\
+	Every function, class, module, or service should have a single clearly defined responsibility\
+O - OCP (Open Closed Principle)\
+	Open for extension but closed for modification\
+L - LSP (Liskov Substitution Principle)\
+	Every child/derived class shoulbe be substitutable for their parent/base class without altering the correctnes of the program\
+I - ISP (Interface Segregation Principle)\
+	Client should never be forced to depend on methods it does not use\
+D - DIP (Dependency Inversion Principle)\
 	Avoid tight coupling between software modules
 
 ## JavaScript File Structure Best Practices
@@ -127,7 +144,7 @@ D - DIP (Dependency Inversion Principle)
 
 ### Event Delegation
 
-Instead of attaching the event listeners directly to the buttons, you delete listening to the parent. When a button is clicked, the listener of the parent element catches the bubbling event.\
+Instead of attaching the event listeners directly to the buttons, you delete listening to the parent. When a button is clicked, the listener of the parent element catches the bubbling event.
 
 1. Determine the parent of elements to watch for events
 2. Attach the event listener to the parent element

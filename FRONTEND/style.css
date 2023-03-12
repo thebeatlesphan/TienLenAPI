@@ -7,12 +7,15 @@
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
   height: 100vh;
   width: 100vw;
 }
 
 .welcome {
-  position: absolute;
   left: 0;
   right: 0;
   text-align: center;
@@ -34,9 +37,6 @@ body {
   position: relative;
   width: 300px;
   height: 500px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   border: black solid 0.2em;
   border-radius: 1em;
   overflow: hidden;
@@ -83,7 +83,7 @@ body {
 .botHand {
   height: 30px;
   width: 27px;
-  border: 1px solid black;
+  border: 1px solid yellow;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -93,10 +93,6 @@ body {
 .botName {
   position: absolute;
   bottom: -1.5rem;
-}
-
-.lastHandPlayed {
-
 }
 
 .intendedHandToPlay {
@@ -110,7 +106,25 @@ body {
   flex-wrap: wrap;
 }
 
-.intendedHandToPlay .card{
+.intendedHandToPlay .card {
   height: 60px;
   width: 40px;
+}
+
+.play-btn {
+  visibility: hidden;
+  font-size: 1rem;
+  letter-spacing: 0.3rem;
+  padding: 0.4rem 1.5rem;
+  border: 2px solid black;
+  background-color: white;
+  cursor: pointer;
+}
+
+.play-btn:disabled {
+  background-color: grey;
+  color: grey;
+  cursor: default;
+  border: 2px solid grey;
+  opacity: 0.9;
 }
