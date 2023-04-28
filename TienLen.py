@@ -43,16 +43,18 @@ class Card:
 		return self.suit_rankings[self.suit]
 	
 class Deck:
+	# Helper variables
 	suits = ["Diamonds", "Hearts", "Spades", "Clubs"]
 	ranks = ["Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King", "Ace"]
 
+	# Create a fresh new deck
 	def __init__(self):
 		self.deck = []
-
 		for rank in Deck.ranks:
 			for suit in Deck.suits:
 				self.deck.append(Card(rank, suit))
 
+	# Shuffle deck
 	def shuffle(self):
 		temp = None
 		for x in range(len(self.deck)):
@@ -61,11 +63,9 @@ class Deck:
 			self.deck[random_position] = self.deck[x]
 			self.deck[x] = temp
 
+	# Deal card from deck
 	def deal_card(self):
 		return self.deck.pop(0)
-
-	def sort_cards(self):
-		pass
 	
 class Players:
 	def __init__(self):
@@ -85,12 +85,14 @@ class Players:
 			self.player4.append(new_deck.deal_card())
 
 class Game:
+	# Intialize game with new deck and players
 	def __init__(self):
 		self.players = Players()
 		self.deck = Deck()
 		self.current_player = None
 		self.last_hand = None
 
+	# Helper method for sorting
 	def compare_ranks(card):
 		return card.value
 	
@@ -100,16 +102,19 @@ class Game:
 		else:
 			return 0
 
+	# Sort low to high by Tien Len standards
 	def sort_all_hands(self):
 		self.players.player1 = sorted(self.players.player1, key=lambda x: (Game.compare_ranks(x), cmp_to_key(Game.compare_suits)(x)))
 		self.players.player2 = sorted(self.players.player2, key=lambda x: (Game.compare_ranks(x), cmp_to_key(Game.compare_suits)(x)))
 		self.players.player3 = sorted(self.players.player3, key=lambda x: (Game.compare_ranks(x), cmp_to_key(Game.compare_suits)(x)))
 		self.players.player4 = sorted(self.players.player4, key=lambda x: (Game.compare_ranks(x), cmp_to_key(Game.compare_suits)(x)))
 		
+	# Same algorithm 
 	def sort_one_hand(self, hand):
 		result = sorted(hand, key=lambda x: (Game.compare_ranks(x), cmp_to_key(Game.compare_suits)(x)))
 		return result
 	
+	# Find player with 3 of spades to start new game
 	def find_three_of_spades(self):
 		players = [self.players.player1, self.players.player2, self.players.player3, self.players.player4]
 		for i, player in enumerate(players):
@@ -117,19 +122,21 @@ class Game:
 				if card.rank == "Three" and card.suit == "Spades":
 					return i
 
+	# TODO: finish 
 	def new_current_player(self):
 		if self.current_player == 3:
 			self.current_player = 0
 		else:
 			self.current_player += 1
 
+	# Prepare new game
 	def new_game(self):
 		self.deck.shuffle()
 		self.players.deal_cards(self.deck)
 		self.sort_all_hands()
 		self.current_player = self.find_three_of_spades()
 	
-	# GAME LOGIC
+	# GAME LOGIC -----------------------------------------------------
 	def hand_value(hand):
 		value = 0
 		for card in hand:
@@ -139,6 +146,50 @@ class Game:
 	def suit_value(suit):
 		return Card.suit_rankings[suit]
 	
+	# Starting with four 2's is an automatic win
+	def player_index_has_four_twos(self):
+		players = [self.players.player1, self.players.player2, self.players.player3, self.players.player4]
+		for index, hand in enumerate(players):
+				result = sum(1 for card in hand if card.value == 12)
+				if result == 4:
+					return index
+		return None
+
+	# determine play type : singles, pairs, straights, cows, dbl straights
+	def determine_play_type(hand):
+		if len(hand) == 1:
+			return "singles" # la bai
+		elif len(hand) == 2 and hand[0]["value"] == hand[1]["value"]:
+			return "pairs" # doi bai
+		elif len(hand) == 3 and hand[0]["value"] == hand[1]["value"] and hand[0]["value"] == hand[2]["value"]:
+			return "triples"
+		elif len(hand) == 4 and all(card["value"] == hand[0]["value"] for card in hand):
+			return "quads" # cows
+		# Straights
+		elif len(hand) >= 3:
+			# check for dbl straights
+			if len(hand) == 6:
+				if hand[0]["value"] == hand[1]["value"] and hand[2]["value"] == hand[3]["value"] and hand[4]["value"] == hand[5]["value"]:
+					return "double straight"
+
+			# single straights
+			prev_card = None
+			for card in hand:
+				if card["value"] == 12:
+					return "Cannot play two's in straights"
+				
+				if not prev_card:
+					prev_card = card["value"]
+
+				elif card["value"] - 1 == prev_card:
+					prev_card = card["value"]
+				else:
+					return "Not a straight"
+			return "straight"
+
+		else:
+			return "not valid hand"
+
 	def can_play_intended_hand(intended_play, last_play) -> bool:
 		if len(intended_play) != len(last_play): # need to rethink bo
 			return False
@@ -155,16 +206,8 @@ class Game:
 			else:
 				print("else statement")
 				return Game.singles(intended_play, last_play)
-	
-	# Starting with four 2's is an automatic win
-	def player_index_has_four_twos(self):
-		players = [self.players.player1, self.players.player2, self.players.player3, self.players.player4]
-		for index, hand in enumerate(players):
-				result = sum(1 for card in hand if card.value == 12)
-				if result == 4:
-					return index
-		return None
-
+			
+	# Play evaluations: will return true or false if play is valid
 	def singles(intended_play, last_play):
 		_intended = Game.hand_value(intended_play)
 		_last = Game.hand_value(last_play)
@@ -173,3 +216,5 @@ class Game:
 		else:
 			return _intended > _last
 
+	def pairs(intended_play, last_play):
+		_intended = Game.hand_value(intended_play)

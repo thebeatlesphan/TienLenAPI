@@ -9,7 +9,6 @@ class Bot:
             self.hand.append(TienLen.Card(card['rank'], card['suit']))
 
     def dead_Cards(self):
-        
         pass
 
     def index_of_straights(self):
@@ -41,9 +40,4 @@ class Bot:
         pass
 
 test = [{"rank":"Five","suit":"Spades","value":2},{"rank":"Five","suit":"Diamonds","value":2},{"rank":"Six","suit":"Spades","value":3},{"rank":"Six","suit":"Diamonds","value":3},{"rank":"Seven","suit":"Clubs","value":4},{"rank":"Seven","suit":"Diamonds","value":4},{"rank":"Eight","suit":"Hearts","value":5},{"rank":"Nine","suit":"Spades","value":6},{"rank":"Jack","suit":"Hearts","value":8},{"rank":"Queen","suit":"Spades","value":9},{"rank":"King","suit":"Spades","value":10},{"rank":"King","suit":"Hearts","value":10},{"rank":"Ace","suit":"Spades","value":11}]
-#for i,x in enumerate(test):
-    #print(x['value'])
-#print(test[1]['value'])
-print(Bot(test).index_of_straights())
-print(Bot(test).index_of_pairs())
-print("hello world")
+

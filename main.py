@@ -5,7 +5,7 @@
 import logging
 from Bot import Bot
 from TienLen import Game
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, Any
@@ -25,6 +25,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class Hand(BaseModel):
+	hand: list
+
 class HandsToEvaluate(BaseModel):
 	intended_play: list
 	last_play: Optional[list] = None
@@ -37,18 +40,32 @@ class PlayBot(BaseModel):
 def read_root():
 	return {"hello": "world"}
 
+# req: null
+# res: 4 player game of Tien Len (3 bots)
 @app.get("/new-game")
 def new_game():
 	game = Game()
 	game.new_game()
 	return game
 
+# req: [intended_play, last_play]
+# res: true / false if intended_play is valid
 @app.post("/submit-play")
 async def submit_play(item: HandsToEvaluate):
-	print(item)
 	return {'item': item}
 
+# req: [bot_hand, last_play]
+# res: [bot_hand, bot_play]
 @app.post("/bot")
 async def bot(item: PlayBot):
 	_bot = Bot(item.bot_hand)
 	return {"item": _bot}
+
+# test
+@app.post("/check")
+async def check(item: Hand):
+	_item = item.dict()
+	_item = _item["hand"]
+	
+	check = Game.determine_play_type(_item)
+	return {check}

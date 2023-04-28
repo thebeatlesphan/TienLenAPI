@@ -77,7 +77,7 @@ const bot_turn = async () => {
       },
       body: JSON.stringify(_body),
     });
-    return data.json()
+    return data.json();
   } catch (err) {
     console.log(err);
   }
@@ -108,9 +108,9 @@ const createPlayers = async () => {
     // BOT TURN
     highlightCurrentPlayer(current_player);
     if (current_player != 0) {
-      console.log(current_player)
+      console.log(current_player);
       let bot_data = await bot_turn();
-      console.log(bot_data)
+      console.log(bot_data);
     }
   } catch (err) {
     console.log(err);
@@ -323,7 +323,7 @@ const displayPlayerHand = (rank, suit) => {
 };
 
 const first_play_of_game = () => {
-  console.log("first play")
+  console.log("first play");
 };
 
 // Highlight current player ------------------------------
