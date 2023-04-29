@@ -156,57 +156,70 @@ class Game:
 		return None
 
 	# determine play type : singles, pairs, straights, cows, dbl straights
-	def determine_play_type(hand):
+	# returns False if not valid hand type
+	def determine_play_type(self, hand):
 		if len(hand) == 1:
-			return "singles" # la bai
+			return True, "singles" # la bai
 		elif len(hand) == 2 and hand[0]["value"] == hand[1]["value"]:
-			return "pairs" # doi bai
+			return True, "pairs" # doi bai
 		elif len(hand) == 3 and hand[0]["value"] == hand[1]["value"] and hand[0]["value"] == hand[2]["value"]:
-			return "triples"
+			return True, "triples"
 		elif len(hand) == 4 and all(card["value"] == hand[0]["value"] for card in hand):
-			return "quads" # cows
+			return True, "quads" # cows
 		# Straights
 		elif len(hand) >= 3:
 			# check for dbl straights
 			if len(hand) == 6:
 				if hand[0]["value"] == hand[1]["value"] and hand[2]["value"] == hand[3]["value"] and hand[4]["value"] == hand[5]["value"]:
-					return "double straight"
-
+					return True, "double straight"
 			# single straights
 			prev_card = None
 			for card in hand:
 				if card["value"] == 12:
-					return "Cannot play two's in straights"
-				
+					return False, "Cannot play two's"
 				if not prev_card:
 					prev_card = card["value"]
-
 				elif card["value"] - 1 == prev_card:
 					prev_card = card["value"]
 				else:
-					return "Not a straight"
-			return "straight"
+					return False, "Not a straight"
+			return True, "straight"
 
 		else:
-			return "not valid hand"
+			return False, "Invalid hand type"
 
-	def can_play_intended_hand(intended_play, last_play) -> bool:
-		if len(intended_play) != len(last_play): # need to rethink bo
-			return False
+	# Return highest value card in hand
+	def highest_value_card(self, hand):
+		return hand[-1]
+
+	# Compare suit rankings if values are equal
+	def is_higher_suit(self, cardOne, cardTwo) -> bool:
+		if cardOne["value"] == cardTwo["value"]:
+			return Card.suit_rankings[cardOne["suit"]] > Card.suit_rankings[cardTwo["suit"]]
+		else:
+			return False, ("Card values do not equal")
+
+	# Check if play is valid
+	def check_valid_intended_play(self, intended_play, last_play: None) -> bool:
+		check_hand = self.determine_play_type(intended_play)
+		if not check_hand[0]:
+			return False, "Not a valid hand"
+		# Free board
+		if last_play == None:
+			return check_hand[0]
 		
-		# First play of the game
-		if last_play == None: 
-			return False
-		
-		# Singles
-		elif len(last_play) == 1:
-			if len(intended_play) != 1:
-				print("if statement")
-				return False
-			else:
-				print("else statement")
-				return Game.singles(intended_play, last_play)
+		check_last_play = self.determine_play_type(last_play)
+		# If both hands are of same play type
+		if check_hand == check_last_play:
+			high_intended = self.highest_value_card(intended_play)
+			high_last = self.highest_value_card(last_play)
 			
+			# If highest value in both hands are equal, compare suit rankings
+			if high_intended["value"] == high_last["value"]:
+				return self.is_higher_suit(high_intended, high_last)
+
+			return high_intended["value"] > high_last["value"]
+
 	# Play evaluations: will return true or false if play is valid
 	def singles(intended_play, last_play):
 		_intended = Game.hand_value(intended_play)

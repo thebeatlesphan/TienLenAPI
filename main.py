@@ -52,7 +52,14 @@ def new_game():
 # res: true / false if intended_play is valid
 @app.post("/submit-play")
 async def submit_play(item: HandsToEvaluate):
-	return {'item': item}
+	_item = item.dict()
+	_intended = _item["intended_play"]
+	_last = _item["last_play"]
+
+	game = Game()
+	check = game.check_valid_intended_play(_intended, _last)
+	print(check)
+	return {check}
 
 # req: [bot_hand, last_play]
 # res: [bot_hand, bot_play]
@@ -66,6 +73,6 @@ async def bot(item: PlayBot):
 async def check(item: Hand):
 	_item = item.dict()
 	_item = _item["hand"]
-	
+
 	check = Game.determine_play_type(_item)
 	return {check}
