@@ -1,6 +1,6 @@
 # NAME: TienLenAPI
 # AUTHOR: Andy Phan
-# DESCRIPTION: API for a card game
+# DESCRIPTION: API for a Vietnamese card game
 
 import logging
 from Bot import Bot

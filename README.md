@@ -17,6 +17,12 @@ cd pathToRepo\
 (this will host program at your localhost / 127.0.0.1)\
 
 ```hypercorn --worker-class trio --workers 4 --reload main:app```
+--bind localhost:port
+
+# DYNAMODB
+
+navigate to extracted dynamo folder\
+java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb -port 8001
 
 # BACKEND
 
