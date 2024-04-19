@@ -186,9 +186,11 @@ class Game:
         # Straights
         elif len(hand) >= 3:
             # check for dbl straights
-            if len(hand) == 6:
-                if hand[0]["value"] == hand[1]["value"] and hand[2]["value"] == hand[3]["value"] and hand[4]["value"] == hand[5]["value"]:
-                    return True, "double straight"
+            for length in range(6, 13, 2):
+                if len(hand) == length:
+                    if all(hand[i]["value"] == hand[i + 1]["value"] for i in range(0, length, 2)):
+                        return True, "double straight"
+
             # single straights
             prev_card = None
             for card in hand:
@@ -214,7 +216,7 @@ class Game:
         if cardOne["value"] == cardTwo["value"]:
             return Card.suit_rankings[cardOne["suit"]] > Card.suit_rankings[cardTwo["suit"]]
         else:
-            return False, ("Card values do not equal")
+            return False, "Cards not same rank"
 
     # Check if play is valid
     def check_valid_intended_play(self, intended_play, last_play: None) -> bool:
