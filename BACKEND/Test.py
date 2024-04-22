@@ -95,12 +95,12 @@ class TestTienLen(unittest.TestCase):
         expected_player = self.game.player_index_has_four_twos()
         self.assertEqual(expected_player, 3)
 
-    def test_determine_play_type(self):
+    def test_get_hand_type(self):
         # test case 1
         test_hand_1 = [
             Card("Two", "Hearts")
         ]
-        expected_singles_hand_1 = self.game.determine_play_type(test_hand_1)
+        expected_singles_hand_1 = self.game.get_hand_type(test_hand_1)
         self.assertEqual(expected_singles_hand_1, (True, 'singles'))
 
         # test case 2
@@ -108,7 +108,7 @@ class TestTienLen(unittest.TestCase):
             Card("Two", "Diamonds"),
             Card("Two", "Hearts")
         ]
-        expected_pairs_hand_2 = self.game.determine_play_type(test_hand_2)
+        expected_pairs_hand_2 = self.game.get_hand_type(test_hand_2)
         self.assertEqual(expected_pairs_hand_2, (True, "pairs"))
 
         # test case 3
@@ -116,7 +116,7 @@ class TestTienLen(unittest.TestCase):
             Card("Two", "Diamonds"),
             Card("Three", "Hearts")
         ]
-        expected_pairs_hand_3 = self.game.determine_play_type(test_hand_3)
+        expected_pairs_hand_3 = self.game.get_hand_type(test_hand_3)
         self.assertEqual(expected_pairs_hand_3, (False, "Invalid hand type"))
 
         # test case 4
@@ -125,8 +125,8 @@ class TestTienLen(unittest.TestCase):
             Card("Three", "Hearts"),
             Card("Four", "Spades")
         ]
-        expected_pairs_hand_4 = self.game.determine_play_type(test_hand_4)
-        self.assertEqual(expected_pairs_hand_4, (False, "Cannot play two's"))
+        expected_pairs_hand_4 = self.game.get_hand_type(test_hand_4)
+        self.assertEqual(expected_pairs_hand_4, (False, "Cannot play twos"))
 
         # test case 5
         test_hand_5 = [
@@ -134,7 +134,7 @@ class TestTienLen(unittest.TestCase):
             Card("Five", "Diamonds"),
             Card("Five", "Hearts")
         ]
-        expected_pairs_hand_5 = self.game.determine_play_type(test_hand_5)
+        expected_pairs_hand_5 = self.game.get_hand_type(test_hand_5)
         self.assertEqual(expected_pairs_hand_5, (True, "triples"))
 
         # test case 6
@@ -143,7 +143,7 @@ class TestTienLen(unittest.TestCase):
             Card("Five", "Diamonds"),
             Card("Five", "Hearts")
         ]
-        expected_pairs_hand_6 = self.game.determine_play_type(test_hand_6)
+        expected_pairs_hand_6 = self.game.get_hand_type(test_hand_6)
         self.assertEqual(expected_pairs_hand_6, (True, "triples"))
 
         # test case 7
@@ -153,7 +153,7 @@ class TestTienLen(unittest.TestCase):
             Card("Five", "Diamonds"),
             Card("Five", "Hearts")
         ]
-        expected_pairs_hand_7 = self.game.determine_play_type(test_hand_7)
+        expected_pairs_hand_7 = self.game.get_hand_type(test_hand_7)
         self.assertEqual(expected_pairs_hand_7, (True, "quads"))
 
         # test case 8
@@ -167,7 +167,7 @@ class TestTienLen(unittest.TestCase):
             Card("Eight", "Spades"),
             Card("Eight", "Hearts")
         ]
-        expected_pairs_hand_8 = self.game.determine_play_type(test_hand_8)
+        expected_pairs_hand_8 = self.game.get_hand_type(test_hand_8)
         self.assertEqual(expected_pairs_hand_8, (True, "double straight"))
 
         # test case 9
@@ -179,7 +179,7 @@ class TestTienLen(unittest.TestCase):
             Card("Two", "Clubs"),
             Card("Two", "Hearts")
         ]
-        expected_pairs_hand_9 = self.game.determine_play_type(test_hand_9)
+        expected_pairs_hand_9 = self.game.get_hand_type(test_hand_9)
         self.assertEqual(expected_pairs_hand_9, (True, "double straight"))
 
         # test case 10
@@ -191,8 +191,8 @@ class TestTienLen(unittest.TestCase):
             Card("Eight", "Clubs"),
             Card("Nine", "Hearts")
         ]
-        expected_pairs_hand_10 = self.game.determine_play_type(test_hand_10)
-        self.assertEqual(expected_pairs_hand_10, (False, "Not a straight"))
+        expected_pairs_hand_10 = self.game.get_hand_type(test_hand_10)
+        self.assertEqual(expected_pairs_hand_10, (False, "Invalid hand type"))
 
         # test case 11
         test_hand_11 = [
@@ -203,8 +203,28 @@ class TestTienLen(unittest.TestCase):
             Card("Eight", "Clubs"),
             Card("Nine", "Hearts")
         ]
-        expected_pairs_hand_11 = self.game.determine_play_type(test_hand_11)
+        expected_pairs_hand_11 = self.game.get_hand_type(test_hand_11)
         self.assertEqual(expected_pairs_hand_11, (True, "straight"))
+
+        # test case 12
+        test_hand_12 = [
+            Card("Six", "Spades"),
+            Card("Six", "Diamonds"),
+            Card("Seven", "Clubs"),
+            Card("Seven", "Hearts"),
+        ]
+        expected_pairs_hand_12 = self.game.get_hand_type(test_hand_12)
+        self.assertEqual(expected_pairs_hand_12, (False, "Invalid hand type"))
+
+        # test case 13
+        test_hand_13 = [
+            Card("Queen", "Hearts"),
+            Card("King", "Spades"),
+            Card("Ace", "Spades"),
+            Card("Two", "Diamonds")
+        ]
+        expected_pairs_hand_13 = self.game.get_hand_type(test_hand_13)
+        self.assertEqual(expected_pairs_hand_13, (False, "Cannot play twos"))
 
     def test_is_higher_suit(self):
         # test case 1
@@ -228,6 +248,111 @@ class TestTienLen(unittest.TestCase):
             test_card_5, test_card_6)
         self.assertEqual(expected_comparison_5_6,
                          (False, "Cards not same rank"))
+
+    def test_is_valid_play(self):
+        # test case 1
+        test_intended_play_1 = [Card("Six", "Spades"),]
+        test_last_hand_1 = [Card("Six", "Diamonds"),]
+        expected_result_1 = self.game.is_valid_play(
+            test_intended_play_1, test_last_hand_1)
+        self.assertEqual(expected_result_1, False)
+
+        # test case 2
+        test_intended_play_2 = [
+            Card("Six", "Spades"),
+            Card("Six", "Hearts"),
+        ]
+        test_last_hand_2 = [
+            Card("Six", "Clubs"),
+            Card("Six", "Diamonds"),
+        ]
+        expected_result_2 = self.game.is_valid_play(
+            test_intended_play_2, test_last_hand_2)
+        self.assertEqual(expected_result_2, True)
+
+        # test case 3
+        test_intended_play_3 = [
+            Card("Six", "Spades"),
+            Card("Six", "Diamonds"),
+            Card("Six", "Hearts"),
+        ]
+        test_last_hand_3 = [
+            Card("Two", "Clubs"),
+            Card("Two", "Diamonds"),
+            Card("Two", "Hearts"),
+        ]
+        expected_result_3 = self.game.is_valid_play(
+            test_intended_play_3, test_last_hand_3)
+        self.assertEqual(expected_result_3, False)
+
+        # test case 4
+        test_intended_play_4 = [
+            Card("Six", "Spades"),
+            Card("Seven", "Diamonds"),
+            Card("Eight", "Diamonds"),
+        ]
+        test_last_hand_4 = [
+            Card("Six", "Clubs"),
+            Card("Seven", "Spades"),
+            Card("Eight", "Hearts"),
+        ]
+        expected_result_4 = self.game.is_valid_play(
+            test_intended_play_4, test_last_hand_4)
+        self.assertEqual(expected_result_4, False)
+
+    def test_get_number_of_twos(self):
+        # test case 1
+        test_hand_1 = [
+            Card("Three", "Spades"),
+        ]
+        expected_count_1 = self.game.get_number_of_twos(test_hand_1)
+        self.assertEqual(expected_count_1, 0)
+
+        # test case 2
+        test_hand_2 = [
+            Card("Two", "Spades"),
+        ]
+        expected_count_2 = self.game.get_number_of_twos(test_hand_2)
+        self.assertEqual(expected_count_2, 1)
+
+        # test case 3
+        test_hand_3 = [
+            Card("Ace", "Diamonds"),
+            Card("Two", "Spades"),
+            Card("Two", "Clubs"),
+        ]
+        expected_count_3 = self.game.get_number_of_twos(test_hand_3)
+        self.assertEqual(expected_count_3, 2)
+
+        # test case 4
+        test_hand_4 = [
+            Card("Two", "Spades"),
+            Card("Two", "Clubs"),
+            Card("Two", "Diamonds"),
+        ]
+        expected_count_4 = self.game.get_number_of_twos(test_hand_4)
+        self.assertEqual(expected_count_4, 3)
+
+        # test case 5
+        test_hand_5 = [
+            Card("Two", "Spades"),
+            Card("Two", "Clubs"),
+            Card("Two", "Diamonds"),
+            Card("Two", "Hearts"),
+        ]
+        expected_count_5 = self.game.get_number_of_twos(test_hand_5)
+        self.assertEqual(expected_count_5, 4)
+
+        # test case 6
+        test_hand_6 = [
+            Card("Ten", "Spades"),
+            Card("Two", "Spades"),
+            Card("Two", "Clubs"),
+            Card("Two", "Diamonds"),
+            Card("Two", "Hearts"),
+        ]
+        expected_count_6 = self.game.get_number_of_twos(test_hand_6)
+        self.assertEqual(expected_count_6, 4)
 
 
 if __name__ == '__main__':

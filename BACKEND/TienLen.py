@@ -37,7 +37,7 @@ class Card:
     def __getitem__(self, key):
         return self.__dict__[key]
 
-    def get_suit(self):
+    def get_rank(self):
         return self.rank_values[self.rank]
 
     def get_suit(self):
@@ -114,14 +114,15 @@ class Game:
 
     # Sort low to high by Tien Len standards
     def sort_all_hands(self):
-        self.players.player1 = sorted(self.players.player1, key=lambda x: (
-            Game.compare_ranks(x), cmp_to_key(Game.compare_suits)(x)))
-        self.players.player2 = sorted(self.players.player2, key=lambda x: (
-            Game.compare_ranks(x), cmp_to_key(Game.compare_suits)(x)))
-        self.players.player3 = sorted(self.players.player3, key=lambda x: (
-            Game.compare_ranks(x), cmp_to_key(Game.compare_suits)(x)))
-        self.players.player4 = sorted(self.players.player4, key=lambda x: (
-            Game.compare_ranks(x), cmp_to_key(Game.compare_suits)(x)))
+        players = [
+            self.players.player1,
+            self.players.player2,
+            self.players.player3,
+            self.players.player4
+        ]
+        for i in range(len(players)):
+            players[i] = sorted(self.players.player1, key=lambda x: (
+                Game.compare_ranks(x), cmp_to_key(Game.compare_suits)(x)))
 
     # Same algorithm
     def sort_one_hand(self, hand):
@@ -153,13 +154,13 @@ class Game:
         self.current_player = self.find_three_of_spades()
 
     # GAME LOGIC -----------------------------------------------------
-    def hand_value(hand):
+    def get_hand_value(hand):
         value = 0
         for card in hand:
             value += card["value"]
         return value
 
-    def suit_value(suit):
+    def get_suit_value(suit):
         return Card.suit_rankings[suit]
 
     # Starting with four 2's is an automatic win
@@ -174,7 +175,7 @@ class Game:
 
     # determine play type : singles, pairs, straights, cows, dbl straights
     # returns False if not valid hand type
-    def determine_play_type(self, hand):
+    def get_hand_type(self, hand):
         if len(hand) == 1:
             return True, "singles"  # la bai
         elif len(hand) == 2 and hand[0]["value"] == hand[1]["value"]:
@@ -182,7 +183,7 @@ class Game:
         elif len(hand) == 3 and hand[0]["value"] == hand[1]["value"] and hand[0]["value"] == hand[2]["value"]:
             return True, "triples"
         elif len(hand) == 4 and all(card["value"] == hand[0]["value"] for card in hand):
-            return True, "quads"  # cows
+            return True, "quads"
         # Straights
         elif len(hand) >= 3:
             # check for dbl straights
@@ -191,24 +192,34 @@ class Game:
                     if all(hand[i]["value"] == hand[i + 1]["value"] for i in range(0, length, 2)):
                         return True, "double straight"
 
-            # single straights
+            # straights
             prev_card = None
             for card in hand:
+                # two's cannot be used in normal straights
                 if card["value"] == 12:
-                    return False, "Cannot play two's"
+                    return False, "Cannot play twos"
+
                 if not prev_card:
                     prev_card = card["value"]
                 elif card["value"] - 1 == prev_card:
                     prev_card = card["value"]
                 else:
-                    return False, "Not a straight"
+                    return False, "Invalid hand type"
             return True, "straight"
 
         else:
             return False, "Invalid hand type"
 
+    # Check if hand is a 'bomb'
+    def is_bomb(self, hand):
+        hand_type = self.get_hand_type(hand)
+        if hand_type[1] == "quads":
+            return True
+        elif hand_type[1] == "double straight":
+            return True
+
     # Return highest value card in hand
-    def highest_value_card(self, hand):
+    def get_highest_value_card(self, hand):
         return hand[-1]
 
     # Compare suit rankings if values are equal
@@ -218,27 +229,28 @@ class Game:
         else:
             return False, "Cards not same rank"
 
+    def get_number_of_twos(self, hand) -> int:
+        result = 0
+        for card in hand:
+            if card.get_rank() == 12:
+                result += 1
+        return result
+
     # Check if play is valid
-    def check_valid_intended_play(self, intended_play, last_play: None) -> bool:
-        check_hand = self.determine_play_type(intended_play)
-        if not check_hand[0]:
-            return False
+    def is_valid_play(self, intended_play, last_hand) -> bool:
         # Free board
-        if last_play == None:
-            return check_hand[0]
+        if last_hand is None:
+            return self.get_hand_type(intended_play)[0]
 
-        check_last_play = self.determine_play_type(last_play)
-        # If play types don't match
-        if check_hand != check_last_play:
-            return False
+        # Check for same hand length and type
+        if self.get_hand_type(last_hand)[1] == self.get_hand_type(intended_play)[1] and len(last_hand) == len(intended_play):
+            # Check for 2s
 
-        # If both hands are of same play type
-        if check_hand == check_last_play:
-            high_intended = self.highest_value_card(intended_play)
-            high_last = self.highest_value_card(last_play)
+            last = self.get_highest_value_card(last_hand)
+            intended = self.get_highest_value_card(intended_play)
+            if last.get_rank() == intended.get_rank():
+                return last.get_suit() < intended.get_suit()
+            else:
+                return last.get_rank() < intended.get_rank()
 
-            # If highest value in both hands are equal, compare suit rankings
-            if high_intended["value"] == high_last["value"]:
-                return self.is_higher_suit(high_intended, high_last)
-
-        return high_intended["value"] > high_last["value"]
+    

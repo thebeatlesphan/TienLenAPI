@@ -57,7 +57,7 @@ async def submit_play(item: HandsToEvaluate):
 	_last = _item["last_play"]
 
 	game = Game()
-	check = game.check_valid_intended_play(_intended, _last)
+	check = game.is_valid_play(_intended, _last)
 	print(check)
 	return {check}
 
